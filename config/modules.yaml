@@ -1,0 +1,30 @@
+xia-module:
+  package: xia-module
+gcp-module-organization:
+  package: xia-module-gcp-project
+  events:
+    deploy:
+gcp-module-project:
+  package: xia-module-gcp-project
+  events:
+    activate:
+gh-module-foundation:
+  package: xia-module-application-gh
+  events:
+    deploy:
+gh-module-application:
+  package: xia-module-application-gh
+  events:
+    activate:
+module-foundation-state-gcs:
+  package: xia-module-terraform-gcs
+  events:
+    deploy:
+module-application-state-gcs:
+  package: xia-module-terraform-gcs
+  events:
+    activate:
+module-foundation-backend-gcs:
+  package: xia-module-terraform-gcs
+  events:
+    deploy:

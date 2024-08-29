@@ -1,0 +1,14 @@
+git: github
+settings:
+  cosmos_name: xia-cosmos
+  default_visibility: public
+  default_owner: x-i-a
+  default_tpl_owner: x-i-a
+  default_tpl_name: xia-template-foundation
+structure:
+  realms:
+    protocol:
+      foundations:
+        xia-framework:
+          repository_name: xia-foundation-framework
+          repository: xia-foundation-framework
