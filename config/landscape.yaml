@@ -1,11 +1,12 @@
 git: github
 topology:
   type: # gcp
-  # cosmos_project:
-  # cosmos_bucket_name:
-  # cosmos_bucket_region:
 settings:
 #  cosmos_name:
+#  cosmos_project:
+#  bucket_name:
+#  bucket_region:
+foundations:
   default_visibility: public
 #  default_owner:
   default_tpl_owner: x-i-a
