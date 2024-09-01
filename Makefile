@@ -24,11 +24,8 @@ destroy: init
 	python -m xia_framework.cosmos destroy
 
 bigbang: init
-	@if [ -z "$(topology)" || -z "$(params)"]; then \
-		echo 'Bigbang parameters not specified. Usage: make bigbang topology=<topology> params="<key>:<value> <key>:<value>"'; \
-	else \
-		python -m xia_framework.cosmos bigbang -t $(topology) -p $(params); \
-	fi
+	@. .venv/bin/activate; \
+	python -m xia_framework.cosmos bigbang
 
 init-module: init
 	@. .venv/bin/activate; \
