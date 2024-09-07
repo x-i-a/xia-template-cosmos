@@ -15,6 +15,19 @@ graph TD
     Foundation_B -->|Manages| Application_B2
 ```
 
+## Quick Start
+Let's using Github + GCP as an example
+### Prerequisites
+* Need having an available GCP Account and GitHub Account
+* Using GCP Web Console or a PC with `gh`, `gcloud` and `terraform` installed.
+This quick start is based on GCP Web console. 
+
+### Steps
+1. Running `gh auth login -s delete_repo` to get GitHub authenticated in Web Console
+2. Running `gh repo create <your-new-repo-name> --template x-i-a/template-repo-name>
+
+## Organizational
+
 ## Usage
 ### Bigbang
 Bigbang is the beginning of the initialization which creates the terraform backend.
