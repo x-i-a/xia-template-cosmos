@@ -1,4 +1,4 @@
-.PHONY: all bigbang init plan apply destroy init-module activate-module
+.PHONY: all bigbang init plan apply destroy init-config init-module activate-module
 
 all:
 	@echo "Specify a command to run"
@@ -26,6 +26,10 @@ destroy: init
 bigbang: init
 	@. .venv/bin/activate; \
 	python -m xia_framework.cosmos bigbang
+
+init-config: init
+	@. .venv/bin/activate; \
+	python -m xia_framework.cosmos init-config
 
 init-module: init
 	@. .venv/bin/activate; \
