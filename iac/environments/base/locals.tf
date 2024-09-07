@@ -10,7 +10,7 @@ locals {
   level_0_foundations = {
     for foundation, foundation_details in lookup(local.structure, "foundations", {}) : foundation => {
       name = foundation
-      parent = "root"
+      parent = "."
       visibility = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_visibility", null))
       repository_owner = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_owner", null))
       repository_name = lookup(foundation_details == null ?  {} : foundation_details, "repository_name", foundation)
@@ -22,7 +22,7 @@ locals {
   level_1_realms = {
     for realm, details in lookup(local.structure, "realms", {}) : realm => {
       name = realm
-      parent = "root"
+      parent = "."
     }
   }
 

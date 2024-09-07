@@ -22,12 +22,21 @@ Let's using Github + GCP as an example
 * Using GCP Web Console or a PC with `gh`, `gcloud` and `terraform` installed.
 This quick start is based on GCP Web console. 
 
-### Steps
+### Configuration Steps
 1. Running `gh auth login -s delete_repo` to get GitHub authenticated in Web Console
 2. Running `read -p "Please enter the cosmos_name: " COSMOS_NAME; echo "You entered: $COSMOS_NAME as cosmos name && export COSMOS_NAME=$COSMOS_NAME"` to choose cosmos name
 3. Running `gh repo create $COSMOS_NAME --public --template x-i-a/xia-template-cosmos` to create the cosmos project
 4. Running `gh repo clone $COSMOS_NAME && cd $COSMOS_NAME` to clone the cosmos repository
-5. 
+5. Running `make bigbang` to create the cosmos
+6. Running `make init-config` to initialize the configuration files
+7. modifying `config/landscape.yaml` file to reflect desired cosmos structure
+8. we decided to also use gcs to save foundation's state files and the cosmos should use gcp resources
+    ```
+    make init-module module_uri=xia-module-terraform-gcs/module-foundation-backend-gcs
+    make init-module module_uri=xia-module-terraform-gcs/module-foundation-state-gcs
+    make init-module module_uri=xia-module-gcp-project/gcp-module-organization
+    ```
+9. Running `make init-config` to initialize the recent added configuration files
 
 
 ## Organizational
