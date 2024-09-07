@@ -1,6 +1,6 @@
 git: github
 topology:
-#  type: gcp
+#  type:
 settings:
 #  cosmos_name:
 #  cosmos_project:
