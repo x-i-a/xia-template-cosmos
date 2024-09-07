@@ -24,7 +24,10 @@ This quick start is based on GCP Web console.
 
 ### Steps
 1. Running `gh auth login -s delete_repo` to get GitHub authenticated in Web Console
-2. Running `gh repo create <your-new-repo-name> --template x-i-a/template-repo-name>
+2. Running `gh repo create <cosmos-repo-name> --template x-i-a/xia-template-cosmos` to create the cosmos project
+3. Running `git repo clone <cosmos-repo-name> && cd <cosmos-repo-name>` to clone the cosmos repository
+4. 
+
 
 ## Organizational
 
