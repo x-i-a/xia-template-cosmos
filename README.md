@@ -37,7 +37,8 @@ This quick start is based on GCP Web console.
     make init-module module_uri=xia-module-gcp-project/gcp-module-organization
     ```
 9. Running `make init-config` to initialize the recent added configuration files
-
+10. adapting `config/core/foundation_tfstate.yaml` to configure where to hold the state file of foundations
+11. Running `make apply` to apply initialization 
 
 ## Organizational
 
