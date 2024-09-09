@@ -7,7 +7,7 @@ locals {
 
 locals {
   config_defaults = { for k, v in local.structure : k => v if k != "realms" && k != "foundations" }
-  l0_foundations = {
+  level_0_foundations = {
     for foundation, foundation_details in lookup(local.structure, "foundations", {}) : foundation => merge(
       local.config_defaults,
       {
@@ -20,7 +20,7 @@ locals {
       }
     )
   }
-  l1_realms = {
+  level_1_realms = {
     for realm, realm_details in lookup(local.structure, "realms", {}) : realm => merge(
       { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
       {
@@ -29,7 +29,7 @@ locals {
       }
     )
   }
-  l1_foundations = {
+  level_1_foundations = {
     for idx, pair in flatten([
       for realm, realm_details in lookup(local.structure, "realms", {}) : [
         for foundation, foundation_details in lookup(realm_details, "foundations", {}) : merge(
@@ -47,7 +47,7 @@ locals {
       ]
     ]) : "${pair.parent}/${pair.name}" => pair
   }
-  l2_realms = {
+  level_2_realms = {
     for idx, pair in flatten([
       for realm, realm_details in lookup(local.structure, "realms", {}) : [
         for sub_realm, sub_details in lookup(realm_details, "realms", {}) : merge(
@@ -61,7 +61,7 @@ locals {
       ]
     ]) : "${pair.parent}/${pair.name}" => pair
   }
-  l2_foundations = {
+  level_2_foundations = {
     for idx, pair in flatten([
       for realm, realm_details in lookup(local.structure, "realms", {}) : [
         for sub_realm, sub_details in lookup(realm_details, "realms", {}) : [
@@ -82,7 +82,7 @@ locals {
       ]
     ]) : "${pair.parent}/${pair.name}" => pair
   }
-  l3_realms = {
+  level_3_realms = {
     for idx, pair in flatten([
       for realm, realm_details in lookup(local.structure, "realms", {}) : [
         for sub_realm, sub_details in lookup(realm_details, "realms", {}) : [
@@ -99,7 +99,7 @@ locals {
       ]
     ]) : "${pair.parent}/${pair.name}" => pair
   }
-  l3_foundations = {
+  level_3_foundations = {
     for idx, pair in flatten([
       for realm, realm_details in lookup(local.structure, "realms", {}) : [
         for sub_realm, sub_details in lookup(realm_details, "realms", {}) : [
@@ -126,6 +126,6 @@ locals {
 }
 
 locals {
-  realms = merge(local.l1_realms, local.l2_realms, local.l3_realms)
-  foundations = merge(local.l0_foundations, local.l1_foundations, local.l2_foundations, local.l3_foundations)
+  realms = merge(local.level_1_realms, local.level_2_realms, local.level_3_realms)
+  foundations = merge(local.level_0_foundations, local.level_1_foundations, local.level_2_foundations, local.level_3_foundations)
 }
