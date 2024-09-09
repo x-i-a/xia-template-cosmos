@@ -6,12 +6,11 @@ settings:
 #  cosmos_project:
 #  bucket_name:
 #  bucket_region:
-foundations:
-  default_visibility: public
-#  default_owner:
-  default_tpl_owner: x-i-a
-  default_tpl_name: xia-template-foundation
 structure:
+  visibility: public
+#  repository_owner:
+#  template_owner:
+#  template_name:
 #  foundations:
 #    foundation-1:
 #  realms:

@@ -1,18 +1,12 @@
 locals {
   landscape = yamldecode(file(var.landscape_file))
   settings = lookup(local.landscape, "settings", {})
-  foundation_defaults = lookup(local.landscape, "foundations", {})
   structure = local.landscape["structure"]
   modules = yamldecode(file(var.modules_file))
 }
 
 locals {
-  config_defaults = {
-    visibility = local.foundation_defaults["default_visibility"]
-    repository_owner = local.foundation_defaults["default_owner"]
-    template_owner = local.foundation_defaults["default_tpl_owner"]
-    template_name = local.foundation_defaults["default_tpl_name"]
-  }
+  config_defaults = { for k, v in local.structure : k => v if k != "realms" && k != "foundations" }
   l0_foundations = {
     for foundation, foundation_details in lookup(local.structure, "foundations", {}) : foundation => merge(
       local.config_defaults,
