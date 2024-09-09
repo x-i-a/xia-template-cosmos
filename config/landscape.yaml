@@ -12,6 +12,8 @@ foundations:
   default_tpl_owner: x-i-a
   default_tpl_name: xia-template-foundation
 structure:
+#  foundations:
+#    foundation-1:
 #  realms:
 #    realm-1:
 #      realms:

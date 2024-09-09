@@ -7,137 +7,131 @@ locals {
 }
 
 locals {
-  level_0_foundations = {
-    for foundation, foundation_details in lookup(local.structure, "foundations", {}) : foundation => {
-      name = foundation
-      parent = "root"
-      visibility = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_visibility", null))
-      repository_owner = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_owner", null))
-      repository_name = lookup(foundation_details == null ?  {} : foundation_details, "repository_name", foundation)
-      template_owner = lookup(foundation_details == null ?  {} : foundation_details, "template_owner", lookup(local.foundation_defaults, "default_tpl_owner", null))
-      template_name = lookup(foundation_details == null ?  {} : foundation_details, "template_name", lookup(local.foundation_defaults, "default_tpl_name", null))
-    }
+  config_defaults = {
+    visibility = local.foundation_defaults["default_visibility"]
+    repository_owner = local.foundation_defaults["default_owner"]
+    template_owner = local.foundation_defaults["default_tpl_owner"]
+    template_name = local.foundation_defaults["default_tpl_name"]
   }
-
-  level_1_realms = {
-    for realm, details in lookup(local.structure, "realms", {}) : realm => {
-      name = realm
-      parent = "root"
-    }
+  l0_foundations = {
+    for foundation, foundation_details in lookup(local.structure, "foundations", {}) : foundation => merge(
+      local.config_defaults,
+      {
+        repository_name = foundation
+      },
+      foundation_details,
+      {
+        name = foundation
+        parent = "root"
+      }
+    )
   }
-
-  level_1_foundations = {
+  l1_realms = {
+    for realm, realm_details in lookup(local.structure, "realms", {}) : realm => merge(
+      { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
+      {
+        name = realm
+        parent = "root"
+      }
+    )
+  }
+  l1_foundations = {
     for idx, pair in flatten([
-      for realm, details in lookup(local.structure, "realms", {}) : [
-        for foundation, foundation_details in lookup(details, "foundations", {}) : {
-          realm = realm
-          foundation = foundation
-          visibility = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_visibility", null))
-          repository_owner = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_owner", null))
-          repository_name = lookup(foundation_details == null ?  {} : foundation_details, "repository_name", foundation)
-          template_owner = lookup(foundation_details == null ?  {} : foundation_details, "template_owner", lookup(local.foundation_defaults, "default_tpl_owner", null))
-          template_name = lookup(foundation_details == null ?  {} : foundation_details, "template_name", lookup(local.foundation_defaults, "default_tpl_name", null))
-        }
-      ]
-    ]) : "${pair.realm}/${pair.foundation}" => {
-      parent           = pair.realm
-      name             = pair.foundation
-      visibility       = pair.visibility
-      repository_owner = pair.repository_owner
-      repository_name  = pair.repository_name
-      template_owner   = pair.template_owner
-      template_name    = pair.template_name
-    }
-  }
-
-  level_2_realms = {
-    for idx, pair in flatten([
-      for realm, details in lookup(local.structure, "realms", {}) : [
-        for sub_realm, sub_details in lookup(details, "realms", {}) : {
-          realm = realm
-          sub_realm = sub_realm
-        }
-      ]
-    ]) : "${pair.realm}/${pair.sub_realm}" => {
-      parent = pair.realm
-      name = pair.sub_realm
-    }
-  }
-
-  level_2_foundations = {
-    for idx, pair in flatten([
-      for realm, details in lookup(local.structure, "realms", {}) : [
-        for sub_realm, sub_details in lookup(details, "realms", {}) : [
-          for foundation, foundation_details in lookup(sub_details, "foundations", {}) : {
-            realm = realm
-            sub_realm = sub_realm
-            foundation = foundation
-            visibility = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_visibility", null))
-            repository_owner = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_owner", null))
-            repository_name = lookup(foundation_details == null ?  {} : foundation_details, "repository_name", foundation)
-            template_owner = lookup(foundation_details == null ?  {} : foundation_details, "template_owner", lookup(local.foundation_defaults, "default_tpl_owner", null))
-            template_name = lookup(foundation_details == null ?  {} : foundation_details, "template_name", lookup(local.foundation_defaults, "default_tpl_name", null))
+      for realm, realm_details in lookup(local.structure, "realms", {}) : [
+        for foundation, foundation_details in lookup(realm_details, "foundations", {}) : merge(
+          local.config_defaults,
+          { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
+          {
+            repository_name = foundation
+          },
+          foundation_details,
+          {
+            parent = realm
+            name = foundation
           }
-        ]
+        )
       ]
-    ]) : "${pair.realm}/${pair.sub_realm}/${pair.foundation}" => {
-      parent           = "${pair.realm}/${pair.sub_realm}"
-      name             = pair.foundation
-      visibility       = pair.visibility
-      repository_owner = pair.repository_owner
-      repository_name  = pair.repository_name
-      template_owner   = pair.template_owner
-      template_name    = pair.template_name
-    }
+    ]) : "${pair.parent}/${pair.name}" => pair
   }
-
-  level_3_realms = {
+  l2_realms = {
     for idx, pair in flatten([
-      for realm, details in lookup(local.structure, "realms", {}) : [
-        for sub_realm, sub_details in lookup(details, "realms", {}) : [
-          for bis_realm, bis_details in lookup(sub_details, "realms", {}) : {
-            realm = realm
-            sub_realm = sub_realm
-            bis_realm = bis_realm
+      for realm, realm_details in lookup(local.structure, "realms", {}) : [
+        for sub_realm, sub_details in lookup(realm_details, "realms", {}) : merge(
+          { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
+          { for k, v in sub_details : k => v if k != "realms" && k != "foundations" },
+          {
+            parent = realm
+            name = sub_realm
           }
-        ]
+        )
       ]
-    ]) : "${pair.realm}/${pair.sub_realm}/${pair.bis_realm}" => {
-      parent = "${pair.realm}/${pair.sub_realm}"
-      name = pair.bis_realm
-    }
+    ]) : "${pair.parent}/${pair.name}" => pair
   }
-
-  level_3_foundations = {
+  l2_foundations = {
     for idx, pair in flatten([
-      for realm, details in lookup(local.structure, "realms", {}) : [
-        for sub_realm, sub_details in lookup(details, "realms", {}) : [
-          for bis_realm, bis_details in lookup(sub_details, "realms", {}) : [
-            for foundation, foundation_details in lookup(bis_details, "foundations", {}) : {
-              realm = realm
-              sub_realm = sub_realm
-              bis_realm = bis_realm
-              foundation = foundation
-              visibility = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_visibility", null))
-              repository_owner = lookup(foundation_details == null ?  {} : foundation_details, "repository_owner", lookup(local.foundation_defaults, "default_owner", null))
-              repository_name = lookup(foundation_details == null ?  {} : foundation_details, "repository_name", foundation)
-              template_owner = lookup(foundation_details == null ?  {} : foundation_details, "template_owner", lookup(local.foundation_defaults, "default_tpl_owner", null))
-              template_name = lookup(foundation_details == null ?  {} : foundation_details, "template_name", lookup(local.foundation_defaults, "default_tpl_name", null))
+      for realm, realm_details in lookup(local.structure, "realms", {}) : [
+        for sub_realm, sub_details in lookup(realm_details, "realms", {}) : [
+          for foundation, foundation_details in lookup(sub_details, "foundations", {}) : merge(
+            local.config_defaults,
+            { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
+            { for k, v in sub_details : k => v if k != "realms" && k != "foundations" },
+            {
+              repository_name = foundation
+            },
+            foundation_details,
+            {
+              parent = "${realm}/${sub_realm}"
+              name = foundation
             }
+          )
+        ]
+      ]
+    ]) : "${pair.parent}/${pair.name}" => pair
+  }
+  l3_realms = {
+    for idx, pair in flatten([
+      for realm, realm_details in lookup(local.structure, "realms", {}) : [
+        for sub_realm, sub_details in lookup(realm_details, "realms", {}) : [
+          for bis_realm, bis_details in lookup(sub_details, "realms", {}) : merge(
+            { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
+            { for k, v in sub_details : k => v if k != "realms" && k != "foundations" },
+            { for k, v in bis_details : k => v if k != "realms" && k != "foundations" },
+            {
+              parent = "${realm}/${sub_realm}"
+              name = bis_realm
+            }
+          )
+        ]
+      ]
+    ]) : "${pair.parent}/${pair.name}" => pair
+  }
+  l3_foundations = {
+    for idx, pair in flatten([
+      for realm, realm_details in lookup(local.structure, "realms", {}) : [
+        for sub_realm, sub_details in lookup(realm_details, "realms", {}) : [
+          for bis_realm, bis_details in lookup(sub_details, "realms", {}) : [
+            for foundation, foundation_details in lookup(bis_details, "foundations", {}) : merge(
+              local.config_defaults,
+              { for k, v in realm_details : k => v if k != "realms" && k != "foundations" },
+              { for k, v in sub_details : k => v if k != "realms" && k != "foundations" },
+              { for k, v in bis_details : k => v if k != "realms" && k != "foundations" },
+              {
+                repository_name = foundation
+              },
+              foundation_details,
+              {
+                parent = "${realm}/${sub_realm}/${bis_realm}"
+                name = foundation
+              }
+            )
           ]
         ]
       ]
-    ]) : "${pair.realm}/${pair.sub_realm}/${pair.bis_realm}/${pair.foundation}" => {
-      parent          = "${pair.realm}/${pair.sub_realm}/${pair.bis_realm}"
-      name            = pair.foundation
-      visibility       = pair.visibility
-      repository_owner = pair.repository_owner
-      repository_name  = pair.repository_name
-      template_owner   = pair.template_owner
-      template_name    = pair.template_name
-    }
+    ]) : "${pair.parent}/${pair.name}" => pair
   }
+}
 
-  realms = merge(local.level_1_realms, local.level_2_realms, local.level_3_realms)
-  foundations = merge(local.level_0_foundations, local.level_1_foundations, local.level_2_foundations, local.level_3_foundations)
+locals {
+  realms = merge(local.l1_realms, local.l2_realms, local.l3_realms)
+  foundations = merge(local.l0_foundations, local.l1_foundations, local.l2_foundations, local.l3_foundations)
 }
