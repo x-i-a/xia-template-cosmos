@@ -32,7 +32,7 @@ This quick start is based on GCP Web console.
 7. modifying `config/landscape.yaml` file to reflect desired cosmos structure
 8. we decided to also use gcs to save foundation's state files and the cosmos should use gcp resources
     ```
-    make init-module module_uri=xia-module-terraform-gcs/module-foundation-backend-gcs
+    make init-module module_uri=xia-module-terraform-gcs/module-cosmos-backend-gcs
     make init-module module_uri=xia-module-terraform-gcs/module-foundation-state-gcs
     make init-module module_uri=xia-module-gcp-project/gcp-module-organization
     ```
