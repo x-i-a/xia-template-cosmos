@@ -9,8 +9,8 @@ settings:
 structure:
   visibility: public
 #  repository_owner:
-#  template_owner:
-#  template_name:
+  template_owner: x-i-a
+  template_name: xia-template-foundation
 #  foundations:
 #    foundation-1:
 #  realms:
