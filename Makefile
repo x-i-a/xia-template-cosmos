@@ -23,7 +23,7 @@ destroy: init
 	@. .venv/bin/activate; \
 	python -m xia_framework.cosmos destroy
 
-destroy: init
+unlock: init
 	@. .venv/bin/activate; \
 	python -m xia_framework.cosmos unlock
 
